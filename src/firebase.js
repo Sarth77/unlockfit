@@ -3,13 +3,13 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { getAuth } from "firebase/auth";
 const firebaseConfig = {
-  apiKey: "AIzaSyD-ScxQ42Xwr7ADgIx6sehGLLveVAAufew",
-  authDomain: "pictures-10.firebaseapp.com",
-  projectId: "pictures-10",
-  storageBucket: "pictures-10.appspot.com",
-  messagingSenderId: "153863460773",
-  appId: "1:153863460773:web:ff5ab77314d4c2843c7a4c",
-  measurementId: "G-1N947SLN61",
+  apiKey: "AIzaSyD888pJSKu5KZD_fv-Yyu0tX1vK0ERZqsw",
+  authDomain: "unlock-fit.firebaseapp.com",
+  projectId: "unlock-fit",
+  storageBucket: "unlock-fit.appspot.com",
+  messagingSenderId: "775665717741",
+  appId: "1:775665717741:web:da565b8ebb10c9438d57e4",
+  measurementId: "G-V2LHNHYPVC",
 };
 
 const app = initializeApp(firebaseConfig);
