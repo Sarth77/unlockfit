@@ -77,9 +77,13 @@ const Login = () => {
         </div>
         <form className="gap-2 flex flex-col h-44 justify-center gap-8">
           <div className="flex flex-row justify-between gap-2">
-            <label className="text-2xl">Email</label>
+            <label htmlFor="email" className="text-2xl">
+              Email
+            </label>
             <input
-              type="email"
+              id="email"
+              name="email"
+              type={"email"}
               className="border border-1"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
