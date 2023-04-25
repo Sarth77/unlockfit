@@ -20,9 +20,10 @@ const DisplayData = () => {
           toast.error(error.message);
         },
       );
-      return unuser;
+      return () => {
+        unuser();
+      };
     }
-
     // eslint-disable-next-line
   }, [currentUser]);
   // useEffect(() => {
@@ -86,9 +87,9 @@ const DisplayData = () => {
             <div className="h-40 w-full flex flex-col items-center justify-center">
               <div
                 className={
-                  currentUserData?.BMICategory[0] === "Normal"
+                  currentUserData?.bmiCategory[0] === "Normal"
                     ? `w-2/6 h-1/2 bg-emerald-500 border rounded`
-                    : currentUserData?.BMICategory[0] === "UnderWeight"
+                    : currentUserData?.bmiCategory[0] === "UnderWeight"
                     ? "w-2/6 h-1/2 bg-orange-600 border rounded"
                     : "w-2/6 h-1/2 bg-red-500 border rounded"
                 }
@@ -107,7 +108,7 @@ const DisplayData = () => {
               <div>
                 <span className="px-1 capitalize">
                   {currentUserData !== ""
-                    ? currentUserData?.BMICategory[0]
+                    ? currentUserData?.bmiCategory[0]
                     : ""}
                 </span>
               </div>
