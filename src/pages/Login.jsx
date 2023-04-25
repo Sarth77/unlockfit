@@ -24,7 +24,7 @@ const Login = () => {
       password !== "" &&
       validEmailRegex.test(email) &&
       password.length < 20 &&
-      password.length > 6
+      password.length > 5
     ) {
       setLoading(true);
       setError(false);
