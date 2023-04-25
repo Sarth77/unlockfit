@@ -36,12 +36,10 @@ const SignUp = () => {
     username: "",
     age: "",
     picture: "",
+    change: 0,
     height: 0,
-    mass: 0,
-    staticDifference: 0,
-    bmicategory: "",
     goalRemaining: 0,
-    bmi: 0,
+    staticDifference: 0,
   });
   const [file, setFile] = useState(null);
   const [per, setPerc] = useState(null);
@@ -91,6 +89,7 @@ const SignUp = () => {
     const value = e.target.value;
     setSignUpData((prev) => ({ ...prev, [id]: value }));
   };
+
   const handleRegister = async (e) => {
     e.preventDefault();
     setError(false);
@@ -120,95 +119,6 @@ const SignUp = () => {
         reg.test(signUpData.userweightGoal)
       ) {
         try {
-          if (signUpData.userweightsUnit === "lbs") {
-            setSignUpData({
-              mass: Number((signUpData.currentWeight / 2.205).toFixed(2)),
-            });
-            if (signUpData.userheightsUnit === "cm") {
-              setSignUpData({
-                height: Number((signUpData.userHeight / 100).toFixed(2)),
-              });
-            } else {
-              setSignUpData({
-                height: Number(signUpData.userHeight).toFixed(2),
-              });
-            }
-            setSignUpData({
-              bmi: Number(
-                (
-                  Number(signUpData.mass) /
-                  (Number(signUpData.height) * Number(signUpData.height))
-                ).toFixed(2),
-              ),
-            });
-            if (parseFloat(signUpData.bmi) < parseFloat(18.5)) {
-              setSignUpData({ bmicategory: "UnderWeight" });
-              setSignUpData({
-                staticDifference: Number(
-                  (signUpData.currentWeight - 132.07).toFixed(2),
-                ).toFixed(2),
-              });
-            } else if (
-              parseFloat(18.5) < parseFloat(signUpData.bmi) &&
-              parseFloat(signUpData.bmi) < parseFloat(25)
-            ) {
-              setSignUpData({ bmicategory: "Normal" });
-              setSignUpData({ staticDifference: 0 });
-            } else if (parseFloat(signUpData.bmi) > parseFloat(25)) {
-              setSignUpData({ bmicategory: "OverWeight" });
-              setSignUpData({
-                staticDifference: Number(
-                  (Number(signUpData.currentWeight) - 178.6).toFixed(2),
-                ).toFixed(2),
-              });
-            }
-          } else if (signUpData.userweightsUnit === "kg") {
-            setSignUpData({
-              mass: Number(Number(signUpData.currentWeight).toFixed(2)),
-            });
-            if (signUpData.userheightsUnit === "cm") {
-              setSignUpData({
-                height: Number((signUpData.userHeight / 100).toFixed(2)),
-              });
-            } else {
-              setSignUpData({
-                height: Number(Number(signUpData.userHeight).toFixed(2)),
-              });
-            }
-            setSignUpData({
-              bmi: Number(
-                (
-                  Number(signUpData.mass) /
-                  (Number(signUpData.height) * Number(signUpData.height))
-                ).toFixed(2),
-              ),
-            });
-            if (parseFloat(signUpData.bmi) < parseFloat(18)) {
-              console.log("inside if of BMI UnderWeight");
-              setSignUpData({ bmicategory: "UnderWeight" });
-              setSignUpData({
-                staticDifference: Number(
-                  (signUpData.currentWeight - parseFloat(59.9)).toFixed(2),
-                ).toFixed(2),
-              });
-            } else if (
-              parseFloat(18) < parseFloat(signUpData.bmi) &&
-              parseFloat(signUpData.bmi) < parseFloat(25)
-            ) {
-              console.log("inside else if of BMI Normal");
-              setSignUpData({ bmicategory: "Normal" });
-              setSignUpData({ staticDifference: 0 });
-            } else if (parseFloat(signUpData.bmi) > parseFloat(25)) {
-              console.log("inside else of BMI OverWeight");
-              setSignUpData({ bmicategory: "OverWeight" });
-              setSignUpData({
-                staticDifference: Number(
-                  (signUpData.currentWeight - parseFloat(81)).toFixed(2),
-                ).toFixed(2),
-              });
-            }
-          }
-
           const res = await createUserWithEmailAndPassword(
             auth,
             signUpData.email,
@@ -216,44 +126,143 @@ const SignUp = () => {
           );
           const user = res.user;
 
-          await updateProfile(user, {
-            displayName: signUpData.username,
-          });
-          console.log("bmi", signUpData.bmi);
-          console.log("bmicategory", signUpData.bmicategory);
+          if (user) {
+            let bmis = 0,
+              staticDifference = 0,
+              bmiCategory = "";
+            if (signUpData.userweightsUnit === "lbs") {
+              if (signUpData.userheightsUnit === "cm") {
+                let heights = signUpData.userHeight / 2.54;
+                bmis =
+                  703 *
+                  parseFloat(signUpData.currentWeight / (heights * heights));
+                bmis = Number(bmis.toFixed(2));
+                if (Number(bmis) <= 18.5) {
+                  staticDifference = (
+                    signUpData.currentWeight - 132.07
+                  ).toFixed(2);
+                  bmiCategory = "UnderWeight";
+                } else if (Number(bmis) > 18.5 && Number(bmis) < 25) {
+                  staticDifference = 0;
+                  bmiCategory = "Normal";
+                } else if (Number(bmis) >= 25) {
+                  staticDifference = Number(
+                    (signUpData.currentWeight - 178.6).toFixed(2),
+                  );
+                  bmiCategory = "OverWeight";
+                }
+              } else {
+                let height = (signUpData.userHeight * 39.37).toFixed(2);
+                height = Number(height);
+                bmis = 703 * (signUpData.currentWeight / (height * height));
+                bmis = parseFloat(bmis.toFixed(2));
+                if (Number(bmis) <= 18.5) {
+                  staticDifference = (
+                    signUpData.currentWeight - 132.07
+                  ).toFixed(2);
+                  bmiCategory = "UnderWeight";
+                } else if (Number(bmis) > 18.5 && Number(bmis) < 25) {
+                  staticDifference = 0;
+                  bmiCategory = "Normal";
+                } else if (Number(bmis) >= 25) {
+                  staticDifference = Number(
+                    (signUpData.currentWeight - 178.6).toFixed(2),
+                  );
+                  bmiCategory = "OverWeight";
+                }
+              }
+            } else {
+              if (signUpData.userheightsUnit === "cm") {
+                let height = parseFloat(signUpData.height / 100).toFixed(2);
+                height = Number(height);
+                bmis = signUpData.currentWeight / (height * height);
+                bmis = parseFloat(bmis.toFixed(2));
+                if (Number(bmis) < 18.5) {
+                  staticDifference = Number(
+                    (signUpData.currentWeight - 59.9).toFixed(2),
+                  );
+                  bmiCategory = "UnderWeight";
+                } else if (Number(bmis) > 18.5 && Number(bmis) < 25) {
+                  staticDifference = 0;
+                  bmiCategory = "Normal";
+                } else if (Number(bmis) >= 25) {
+                  staticDifference = Number(
+                    (signUpData.currentWeight - 81).toFixed(2),
+                  );
+                  bmiCategory = "OverWeight";
+                }
+              } else {
+                let height = parseFloat(
+                  signUpData.height * signUpData.height,
+                ).toFixed(2);
+                bmis = signUpData.currentWeight / Number(height);
+                bmis = parseFloat(bmis.toFixed(2));
+                if (Number(bmis) < 18.5) {
+                  staticDifference = Number(
+                    (signUpData.currentWeight - 59.9).toFixed(2),
+                  );
+                  bmiCategory = "UnderWeight";
+                } else if (Number(bmis) > 18.5 && Number(bmis) < 25) {
+                  staticDifference = 0;
+                  bmiCategory = "Normal";
+                } else if (Number(bmis) >= 25) {
+                  staticDifference = Number(
+                    (signUpData.currentWeight - 81).toFixed(2),
+                  );
+                  bmiCategory = "OverWeight";
+                }
+              }
+            }
+            console.log("bmi", bmis);
+            console.log("bmiCategory", bmiCategory);
+            console.log("staticdiff", staticDifference);
+            const dbRef = collection(db, "users");
+            await setDoc(doc(dbRef, user.uid), {
+              startDate: labelDate,
+              picture: signUpData.picture,
+              email: signUpData.email,
+              name: signUpData.username,
+              gender: signUpData.gender,
+              age: Number(signUpData.age),
+              startWeight: Number(signUpData.currentWeight),
+              currentWeight: [Number(signUpData.currentWeight)],
+              weightGoal: Number(signUpData.userweightGoal),
+              height: [Number(signUpData.userHeight)],
+              weightUnit: signUpData.userweightsUnit,
+              heightUnit: signUpData.userheightsUnit,
+              bmi: [Number(bmis)],
+              progress: [],
+              staticDifference: [Number(staticDifference)],
+              change: [Number(0)],
+              goalRemaining: [
+                Number(signUpData.userweightGoal - signUpData.currentWeight),
+              ],
+              bmiCategory: [bmiCategory],
+              role: "U",
+            });
 
-          const dbRef = collection(db, "users");
-          await setDoc(doc(dbRef, user.uid), {
-            bmi: [Number(signUpData.bmi)],
-            bmiCategory: [signUpData.bmicategory],
-            startDate: labelDate,
-            picture: signUpData.picture,
-            email: signUpData.email,
-            name: signUpData.username,
-            gender: signUpData.gender,
-            age: Number(signUpData.age),
-            startWeight: Number(signUpData.currentWeight),
-            currentWeight: [Number(signUpData.currentWeight)],
-            weightGoal: Number(signUpData.userweightGoal),
-            height: [Number(signUpData.userHeight)],
-            weightUnit: signUpData.userweightsUnit,
-            heightUnit: signUpData.userheightsUnit,
-            progress: [],
-            staticDifference: [Number(signUpData.staticDifference)],
-            change: [Number(signUpData.change)],
-            goalRemaining: [Number(signUpData.goalRemaining)],
-            role: "U",
-          });
-
-          await addDoc(collection(db, `table-${res.user.uid}`), {
-            date: labelDate,
-            currentWeight: signUpData.currentWeight,
-            difference: 0,
-          });
-          toast.success("Account created !");
-          setTimeout(() => {
-            navigate("/login");
-          }, 5000);
+            const tableUpdate = async () => {
+              const a = await addDoc(collection(db, `table-${user.uid}`), {
+                date: labelDate,
+                currentWeight: signUpData.currentWeight,
+                difference: 0,
+              });
+              return a;
+            };
+            tableUpdate();
+            const profileUpdate = async () => {
+              const b = await updateProfile(user, {
+                displayName: signUpData.username,
+                photoURL: signUpData.picture,
+              });
+              return b;
+            };
+            profileUpdate();
+            toast.success("Account created !");
+            setTimeout(() => {
+              navigate("/login");
+            }, 5000);
+          }
         } catch (err) {
           setError(true);
           if (err.message === "Firebase: Error (auth/email-already-in-use).") {
@@ -280,6 +289,7 @@ const SignUp = () => {
       alert("Please agree to the Terms & Conditions");
     }
   };
+
   return (
     <div>
       <div className="hidden md:block">

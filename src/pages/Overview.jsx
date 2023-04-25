@@ -170,7 +170,7 @@ const Overview = () => {
               <div>
                 <span>
                   {currentUserData
-                    ? currentUserData.change[currentUserData.change.length - 1]
+                    ? currentUserData?.change[currentUserData.change.length - 1]
                     : ""}
                 </span>
                 <span>{currentUserData?.weightUnit}</span>
