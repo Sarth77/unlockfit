@@ -89,6 +89,7 @@ const WebSignUp = () => {
     e.preventDefault();
     setError(false);
     setErrorMessage("");
+    let reg = new RegExp(/^\d{0,9}$/);
     if (checked) {
       if (
         signUpData.password !== "" &&
@@ -97,15 +98,23 @@ const WebSignUp = () => {
         signUpData.username !== "" &&
         signUpData.age !== "" &&
         signUpData.age > 5 &&
+        signUpData.age < 150 &&
+        reg.test(signUpData.age) &&
         signUpData.currentWeight !== "" &&
         signUpData.currentWeight > 5 &&
+        signUpData.currentWeight < 1999 &&
         signUpData.userHeight !== "" &&
+        reg.test(signUpData.userHeight) &&
         signUpData.userHeight > 2 &&
+        signUpData.userHeight < 400 &&
         signUpData.userweightGoal !== "" &&
         signUpData.userweightGoal > 5 &&
+        signUpData.userweightGoal < 1999 &&
         signUpData.userheightsUnit !== "" &&
         signUpData.userweightsUnit !== "" &&
-        signUpData.gender !== ""
+        signUpData.gender !== "" &&
+        reg.test(signUpData.currentWeight) &&
+        reg.test(signUpData.userweightGoal)
       ) {
         try {
           const res = await createUserWithEmailAndPassword(
