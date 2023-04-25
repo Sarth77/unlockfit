@@ -101,6 +101,8 @@ const Overview = () => {
         }
         setOpen(false);
       } else {
+        setLoading(false);
+        setOpen(false);
         alert("Please enter valid weight");
       }
     }
