@@ -107,11 +107,14 @@ const SignUp = () => {
         reg.test(signUpData.age) &&
         signUpData.currentWeight !== "" &&
         signUpData.currentWeight > 5 &&
+        signUpData.currentWeight < 1999 &&
         signUpData.userHeight !== "" &&
         reg.test(signUpData.userHeight) &&
         signUpData.userHeight > 2 &&
+        signUpData.userHeight < 400 &&
         signUpData.userweightGoal !== "" &&
         signUpData.userweightGoal > 5 &&
+        signUpData.userweightGoal < 1999 &&
         signUpData.userheightsUnit !== "" &&
         signUpData.userweightsUnit !== "" &&
         signUpData.gender !== "" &&

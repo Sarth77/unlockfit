@@ -69,36 +69,40 @@ const Overview = () => {
     e.preventDefault();
     setLoading(true);
     if (currentUserData) {
-      await addDoc(collection(db, `table-${currentUser.uid}`), {
-        date: labelDate,
-        difference:
-          weight -
-          currentUserData.currentWeight[
-            currentUserData.currentWeight.length - 1
-          ],
-        currentWeight: weight,
-      });
-      const changeRef = doc(db, "users", currentUser.uid);
-      await updateDoc(changeRef, {
-        change: arrayUnion(
-          weight -
+      if (Number(weight) < 1999 && Number(weight) > 2) {
+        await addDoc(collection(db, `table-${currentUser.uid}`), {
+          date: labelDate,
+          difference:
+            weight -
             currentUserData.currentWeight[
               currentUserData.currentWeight.length - 1
             ],
-        ),
-        currentWeight: arrayUnion(weight),
-        goalRemaining: arrayUnion(currentUserData.weightGoal - weight),
-      });
-      const res = doc(db, "users", currentUser.uid);
-      const docSnap = await getDoc(res);
-      if (docSnap.exists()) {
-        setCurrentUserData({ ...docSnap.data() });
-        setLoading(false);
+          currentWeight: weight,
+        });
+        const changeRef = doc(db, "users", currentUser.uid);
+        await updateDoc(changeRef, {
+          change: arrayUnion(
+            weight -
+              currentUserData.currentWeight[
+                currentUserData.currentWeight.length - 1
+              ],
+          ),
+          currentWeight: arrayUnion(weight),
+          goalRemaining: arrayUnion(currentUserData.weightGoal - weight),
+        });
+        const res = doc(db, "users", currentUser.uid);
+        const docSnap = await getDoc(res);
+        if (docSnap.exists()) {
+          setCurrentUserData({ ...docSnap.data() });
+          setLoading(false);
+        } else {
+          setLoading(false);
+          toast.error("No such document!");
+        }
+        setOpen(false);
       } else {
-        setLoading(false);
-        toast.error("No such document!");
+        alert("Please enter valid weight");
       }
-      setOpen(false);
     }
   };
   return (

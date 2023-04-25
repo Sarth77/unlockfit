@@ -17,7 +17,15 @@ const Login = () => {
   const navitage = useNavigate();
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (email !== "" && password !== "") {
+    let validEmailRegex =
+      /^[a-zA-Z0-9.!#$%&'*/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    if (
+      email !== "" &&
+      password !== "" &&
+      validEmailRegex.test(email) &&
+      password.length < 20 &&
+      password.length > 6
+    ) {
       setLoading(true);
       setError(false);
       setErrorMessage("");
